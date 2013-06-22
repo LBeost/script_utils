@@ -1,4 +1,4 @@
 script_utils
 ============
 
-small utilities
+This repository contains my personal scripts.
