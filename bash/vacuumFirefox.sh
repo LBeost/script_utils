@@ -1,4 +1,5 @@
 #!/bin/sh
+#
 # vacuumFirefox.sh
 #
 # Copyright 2010 LBeost
