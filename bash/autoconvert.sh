@@ -70,8 +70,8 @@ find $workDir -name '*.mp4' -o -name '*.mkv' -o -name '*.avi' | while read f; do
 		if [ $width -gt 1200 ]; then
 			# must re-encode to SD if width > 1200
 			$avconv -y -i "$f" -vcodec libx264 -preset fast -crf 25 \
-				-r 23.976 -s 704x396 -threads 0 -v info \
-				-acodec libmp3lame -b:a 128k -sn "$newFile"
+				-r 23.976 -s 704x396 -threads 0 -v info -acodec libmp3lame \
+				-b:a 128k -ac 2 -sn "$newFile"
 		fi
 	fi
 done
