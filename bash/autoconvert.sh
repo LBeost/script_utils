@@ -20,6 +20,15 @@
 # MA 02110-1301, USA.
 
 
+## HOW TO USE
+#
+# Simply run this script on the command line : autoconvert.sh ~/directory/
+# or add a single line in your crontab :
+# */5 * * * *      su -s /bin/bash your-user -c 'bash ~/autoconvert.sh ~/directory/'
+#
+###############
+
+
 ## functions
 # display usage and exit
 display_usage() {
@@ -69,7 +78,7 @@ find $workDir -name '*.mp4' -o -name '*.mkv' -o -name '*.avi' | while read f; do
 		# no encoded version found
 		if [ $width -gt 1200 ]; then
 			# must re-encode to SD if width > 1200
-			$avconv -y -i "$f" -vcodec libx264 -preset fast -crf 25 \
+			$avconv -y -i "$f" -vcodec libx264 -preset fast -crf 24 \
 				-r 23.976 -s 704x396 -threads 0 -v info -acodec libmp3lame \
 				-b:a 128k -ac 2 -sn "$newFile"
 		fi
