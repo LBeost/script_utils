@@ -29,21 +29,21 @@ if [ "$1" == "install" ]; then
 	iptables -N WSWGSF
 	iptables -I INPUT 1 -p udp --dport $PORT -d $HOST -m u32 --u32 "0x20=0x67657473&&0x24=0x74617475&&0x25&0xff=0x73" -j WSWGSF
 	iptables -A WSWGSF -m recent --set --name wswflood
+	iptables -A WSWGSF -m recent --update --seconds 1 --hitcount $RQS --name wswflood --rsource -j LOG --log-prefix "firewall : war§sow getstatus flood " --log-level info
 	iptables -A WSWGSF -m recent --update --seconds 1 --hitcount $RQS --name wswflood --rttl -j DROP
 	iptables -A WSWGSF -j ACCEPT
 	echo "installed :)"
-fi
-
-if [ "$1" == "remove" ]; then
+elif [ "$1" == "remove" ]; then
 	iptables -D INPUT -p udp --dport $PORT -d $HOST -m u32 --u32 "0x20=0x67657473&&0x24=0x74617475&&0x25&0xff=0x73" -j WSWGSF
 	iptables -D WSWGSF -m recent --set --name wswflood
+	iptables -D WSWGSF -m recent --update --seconds 1 --hitcount $RQS --name wswflood --rsource -j LOG --log-prefix "firewall : war§sow getstatus flood " --log-level info
 	iptables -D WSWGSF -m recent --update --seconds 1 --hitcount $RQS --name wswflood --rttl -j DROP
 	iptables -D WSWGSF -j ACCEPT
 	iptables -X WSWGSF
 	echo "removed :)"
-fi
-
-if [ -z "$1" ]; then
-	echo "usage ${0##*/} install|remove"
+else
+	echo "Usage:"
+	echo -e "${0##*/} install : add iptables rules"
+	echo -e "${0##*/} remove : delete iptables rules"
 	exit
 fi
