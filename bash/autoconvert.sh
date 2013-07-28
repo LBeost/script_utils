@@ -38,8 +38,10 @@ display_usage() {
 ## setting some variables and checking dependencies
 # variables
 workDir="$1"
+nicelvl="-n19"
 avconv=$(which avconv)
 awk=$(which awk)
+nice=$(which nice)
 # checking paths
 if [ -z $avconv ] || [ ! -f $avconf ]; then
 	echo "avconv not found"
@@ -47,6 +49,10 @@ if [ -z $avconv ] || [ ! -f $avconf ]; then
 fi
 if [ -z $awk ] || [ ! -f $awk ]; then
 	echo "awk not found"
+	exit -1
+fi
+if [ -z $nice ] || [ ! -f $nice ]; then
+	echo "nice not found"
 	exit -1
 fi
 
@@ -78,9 +84,9 @@ find $workDir -name '*.mp4' -o -name '*.mkv' -o -name '*.avi' | while read f; do
 		# no encoded version found
 		if [ $width -gt 1200 ]; then
 			# must re-encode to SD if width > 1200
-			$avconv -y -i "$f" -vcodec libx264 -preset fast -crf 24 \
+			$nice $nicelvl $avconv -y -i "$f" -vcodec libx264 -preset fast -crf 24 \
 				-r 23.976 -s 704x396 -threads 0 -v info -acodec libmp3lame \
-				-b:a 128k -ac 2 -sn "$newFile"
+				-b:a 160k -ac 2 -sn "$newFile"
 		fi
 	fi
 done
