@@ -65,7 +65,7 @@ dpkeyfile="$domain"".deprotected.key"
 
 # check if certificate exists
 if [ -f $keyfile ]; then
-	yes_no_question "File $keyfile already exists. Overwrite (y/n [n])"
+	yes_no_question "File '"$keyfile"' already exists. Overwrite (y/n [n])"
 	if [ -z $answer ] || [ "$answer" == "n" ]; then
 		echo "$keyfile not overwritten."
 		exit -1
@@ -103,5 +103,13 @@ while read line; do
 done
 
 echo
-echo "Just configure your webserver with the SSL keys files ($keyfile and $crtfile)\
-and you're done!"
+echo -ne "Your cerficates :
+o $crtfile : your certificate
+o $csrfile : your certificate request
+o $keyfile : you key-file
+o $dpkeyfile : your unprotected key-file"
+
+echo
+echo
+echo "Just configure your webserver with the SSL keys files ('"$keyfile"' and '"$crtfile"')\
+ and you're done!"
