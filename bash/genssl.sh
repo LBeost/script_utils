@@ -21,7 +21,7 @@
 # MA 02110-1301, USA.
 
 ## Configuration - Feel free to modify default values
-cfg_keysize=2048
+cfg_keysize=4096
 cfg_password="password"
 cfg_country="FR"
 cfg_state="Some-State"
