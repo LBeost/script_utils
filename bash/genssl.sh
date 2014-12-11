@@ -3,7 +3,7 @@
 # genssl.sh
 # SSL certificates generator for NGiNX :]
 #
-# Copyright 2013 LBeost
+# Copyright 2015 LBeost
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -77,7 +77,7 @@ echo -ne "o Generating keys: please wait... [1/3]\r"
 openssl genrsa -des3 -passout pass:$cfg_password -out $keyfile $cfg_keysize > /dev/null 2>&1
 
 echo -ne "o Generating keys: please wait... [2/3]\r"
-openssl req -new -key $keyfile -passin pass:$cfg_password \
+openssl req -new -sha256 -key $keyfile -passin pass:$cfg_password \
 -subj "/C=$cfg_country/ST=$cfg_state/L=$cfg_locality/CN=$domain" \
 -out $csrfile > /dev/null 2>&1
 
