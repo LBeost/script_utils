@@ -22,6 +22,8 @@
 mozDir="$HOME/.mozilla/firefox/"
 sqlite=$(which sqlite3)	# find sqlite binary
 firefoxDir="$mozDir$(ls $mozDir | grep '\.default$')/" #find default profile
+bold="\033[1m"
+endbold="\033[0m"
 
 # check if sqlite binary exists
 if [ -z $sqlite ] || [ ! -f $sqlite ]; then
@@ -55,27 +57,27 @@ prefsJS="$firefoxDir/prefs.js"
 prefsJSold="$firefoxDir/prefs.js.BAK"
 if [ -f $prefsJS ]; then
 	mv $prefsJS $prefsJSold
-	awk '!/print.tmp.print/ && !/printer/' $prefsJSold > $prefsJS
+	awk '!/print.print/ && !/printer/' $prefsJSold > $prefsJS
 fi
 
 # processing every .sqlite files
 echo "o Firefox is closed, running vacuum tasks..."
-#for file in $(ls "$firefoxDir*.sqlite"); do
-for file in $(ls "$firefoxDir" | grep '\.sqlite$'); do
-#for file in $(ls "$firefoxDir" "$firefoxDir/OfflineCache" | grep '\.sqlite$'); do
-	file="$firefoxDir$file"
+#for file in $(ls "$firefoxDir" | grep '\.sqlite$'); do
+for file in $(find "$firefoxDir" -name '*.sqlite'); do
+	#file="$firefoxDir$file"
 	# check if file is REALLY an SQLite file
 	if [ "$(file $file | awk '{print($2)}')" == "SQLite" ]; then
-		size=$(ls -lh $file | awk '{print($5)}')
+		size=$(ls -l $file | awk '{print($5)}')
+		dsize=$(ls -lh $file | awk '{print($5)}')
 		# cleanning by using sqlite VACUUM command
 		# which does NOT remove any files
-		echo -en "> Processing ${file##*/} ($size)... [1/2]\r";
+		echo -en "> Processing $bold${file##*/}$endbold ($dsize)... [1/2]\r";
 		$sqlite $file VACUUM;
 		# reindexing too
-		echo  -en "> Processing ${file##*/} ($size)... [2/2]\r";
+		echo  -en "> Processing $bold${file##*/}$endbold ($dsize)... [2/2]\r";
 		$sqlite $file REINDEX;
-		nsize=$(ls -lh $file | awk '{print($5)}')
-		echo  "> Processing ${file##*/} ($size > $nsize)... [ok]";
+		nsize=$(ls -l $file | awk '{print($5)}')
+		echo  -e "> Processing ${file##*/} ($bold$(expr $((100-($nsize * 100 / $size))))% reduction$endbold)... [ok]\r";
 	fi
 done
 
